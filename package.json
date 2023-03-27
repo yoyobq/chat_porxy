@@ -8,5 +8,11 @@
   },
   "scripts": {
     "start": "node tran.js"
-  }
+  },
+  "repositories": [
+    {
+      "type": "npm",
+      "url": "https://npm.pkg.github.com/openai/api"
+    }
+  ]
 }
