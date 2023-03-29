@@ -4,6 +4,7 @@
   "type": "module",
   "main": "tarn.js",
   "dependencies": {
+    "https": "^1.0.0",
     "openai": "^3.2.1"
   },
   "scripts": {
