@@ -40,7 +40,7 @@ async function chat(question, API_KEY) {
   
     res.on('end', () => {
       const data = JSON.parse(body);
-      console.log(data.choices[0].message);
+      console.log(data.choices[0]);
     });
   });
 

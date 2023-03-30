@@ -9,7 +9,7 @@ async function handleTextDavinci003(question, API_KEY) {
     let openai = new OpenAIApi(configuration);
     
     // console.log(configuration);
-    console.log(question);
+    // console.log(question);
     // 获得响应
     const completion = await openai.createCompletion(question);
 
@@ -17,7 +17,7 @@ async function handleTextDavinci003(question, API_KEY) {
     openai = null;
     // console.log(completion.data);
     // return { result: completion.data.choices[0].text };
-    console.log(completion.data.choices[0].text);
+    console.log(completion.data.choices[0]);
     return completion.data;
   } catch(error) {
     // Consider adjusting the error handling logic for your use case

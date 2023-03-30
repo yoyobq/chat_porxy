@@ -12,11 +12,11 @@ const server = http.createServer((req, res) => {
   req.on('end', async () => {
     try {
       const data = JSON.parse(body);
-      console.log(data);
+      // console.log(data);
       const question = data.query;
       const API_KEY = data.API_KEY;
       const mode = data.mode;
-      // console.log(question.prompt);
+      console.log(question);
       // console.log(mode);
       res.statusCode = 200;
       res.setHeader('Content-Type', 'application/json');
@@ -32,7 +32,7 @@ const server = http.createServer((req, res) => {
 
       res.end(JSON.stringify(answer));
     } catch (error) {
-      console.error(error);
+      console.log(req.socket.remoteAddress + ': ' + err); 
       res.statusCode = 500;
       res.end('Internal Server Error');
     }
