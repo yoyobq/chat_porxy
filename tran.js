@@ -7,6 +7,7 @@ import generatingText from './handleTextDavinci003.js';
 const server = http.createServer((req, res) => {
   let body = '';
   req.on('data', chunk => {
+    console.log(req.socket.remoteAddress);
     body += chunk;
   });
   req.on('end', async () => {
@@ -16,7 +17,7 @@ const server = http.createServer((req, res) => {
       const question = data.query;
       const API_KEY = data.API_KEY;
       const mode = data.mode;
-      console.log(question);
+      // console.log(question);
       // console.log(mode);
       res.statusCode = 200;
       res.setHeader('Content-Type', 'application/json');
@@ -24,15 +25,17 @@ const server = http.createServer((req, res) => {
       let answer;
       if (mode === 'complete') {
         answer = await generatingText(question, API_KEY);
+        res.end(JSON.stringify(answer));
       } else {
         if (mode === 'chat') {
           answer = await chat(question, API_KEY);
+          // console.log(answer);
+          res.end(JSON.stringify(answer));
         }
       }
-
-      res.end(JSON.stringify(answer));
+     
     } catch (error) {
-      console.log(req.socket.remoteAddress + ': ' + err); 
+      console.log(req.socket.remoteAddress + ': ' + error); 
       res.statusCode = 500;
       res.end('Internal Server Error');
     }

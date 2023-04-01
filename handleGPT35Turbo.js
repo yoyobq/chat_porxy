@@ -1,55 +1,54 @@
 import https from 'https';
 
 async function chat(question, API_KEY) {
+  return new Promise((resolve, reject) => {
+    const url = 'https://api.openai.com/v1/chat/completions';
 
-  const url = 'https://api.openai.com/v1/chat/completions';
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${API_KEY}`
+      }
+    };
 
-  question = {
-    model: "gpt-3.5-turbo",
-    messages: [
-      // {"role": "system", "content": "You are a helpful assistant."},
-      {"role": "user", "content": "苏州技师学院怎么样？"},
-      // {"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in 2020."},
-      // {"role": "user", "content": "Where was it played?"}
-    ],
-    // temperature: 1, // 默认 1，范围0-2 越高答题思路越宽
-    // top_p: 1, // 默认1，范围 0-2，不要和 temperature 一起修改
-    // n: 1, // number | optional | 1 | 最多返回几份答案
-    // stream: boolean | optional | false | 像官网一样流式传输结果
-    // stop: string or array | optional | null | 终止流式传输的字符
-    max_tokens: 512, // int | optional | infinite | 最高 2048，太低没用 | 每次最多使用多少 token 
-    // presence_penalty: number | optional | 0 | -2 to 2 | 正值允许创新，负值防止跑题
-    // frequency_penalty: number | optional | 0 | -2 to 2 | 正值防止逐字重复同一行
-    // logit_bias: map | optional | null 没看懂
-    // user: string | optional 用户标识符
-  }
+    const req = https.request(url, options, (res) => {
+      // let body = ''; // 另一种方法
+      let chunks = []
 
-  const options = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${API_KEY}`
-    }
-  };
 
-  const req = https.request(url, options, (res) => {
-    let body = '';
-    res.on('data', (chunk) => {
-      body += chunk;
+      // 服务器响应时，收录 body
+      res.on('data', (chunk) => {
+        // body += chunk; 另一种方法
+        chunks.push(chunk);
+      });
+      
+      // 响应完成后
+      res.on('end', () => {
+        // const data = JSON.parse(body); 另一种方法
+        const data = Buffer.concat(chunks).toString();
+        let response;
+
+        try {
+          response = JSON.parse(data);
+        } catch (error) {
+          console.error('Invalid JSON response:', data);
+          reject(error);
+        }
+        console.log(response.choices[0]);
+        // Promise 对象的返回
+        resolve(response);
+      });
+
+      req.on('error', (error) => {
+        console.error('Request error:', error);
+        reject(error);
+      });
     });
-  
-    res.on('end', () => {
-      const data = JSON.parse(body);
-      console.log(data.choices[0]);
-    });
+
+    req.write(JSON.stringify(question));
+    req.end();
   });
-
-  req.write(JSON.stringify(question));
-  req.end();
-
-  // console.log(req.data.choices[0]);
-
-  return data;
 }
 
 export default chat;
