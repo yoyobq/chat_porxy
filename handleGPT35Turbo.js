@@ -31,13 +31,13 @@ async function chat(question, API_KEY) {
 
         try {
           response = JSON.parse(data);
+          console.log(response.choices[0]);
+          // Promise 对象的返回
+          resolve(response);
         } catch (error) {
           console.error('Invalid JSON response:', data);
           reject(error);
         }
-        console.log(response.choices[0]);
-        // Promise 对象的返回
-        resolve(response);
       });
 
       req.on('error', (error) => {
